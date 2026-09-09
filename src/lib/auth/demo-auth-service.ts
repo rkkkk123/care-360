@@ -115,4 +115,25 @@ export class DemoAuthService implements AuthService {
       return { user: null, error: new Error("Invalid session data") };
     }
   }
+
+  async updateProfile(updates: Partial<UserProfile>) {
+    const { user } = await this.getSession();
+    if (!user) return { user: null, error: new Error("Not logged in") };
+    
+    const updatedUser = { ...user, ...updates };
+    
+    const cookieStore = await this.getCookiesModule();
+    if (cookieStore) {
+      cookieStore.set(DEMO_COOKIE_NAME, JSON.stringify(updatedUser), {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        path: "/",
+      });
+    } else {
+      document.cookie = `${DEMO_COOKIE_NAME}=${JSON.stringify(updatedUser)}; path=/;`;
+    }
+    
+    return { user: updatedUser, error: null };
+  }
 }

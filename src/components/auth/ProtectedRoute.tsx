@@ -39,7 +39,7 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   }, [user, isLoading, router, pathname, allowedRoles]);
 
-  if (isLoading || (!user && !isLoading)) {
+  if (isLoading || !user) {
     return (
       <div className="flex h-screen w-full items-center justify-center bg-[#FAFAFC]">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />

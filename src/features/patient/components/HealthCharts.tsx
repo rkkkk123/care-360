@@ -134,7 +134,7 @@ export function HealthCharts() {
                 }}
                 itemStyle={{ fontSize: '13px', fontWeight: 500, color: '#3b82f6' }}
                 labelStyle={{ color: 'hsl(var(--muted-foreground))', fontSize: '12px', marginBottom: '4px' }}
-                formatter={(value: number) => [`${value} kg`, 'Weight']}
+                formatter={(value: any) => [`${value} kg`, 'Weight']}
               />
               <Line 
                 type="monotone" 
