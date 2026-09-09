@@ -1,0 +1,266 @@
+"use client";
+
+import * as React from "react";
+import Link from "next/link";
+import {
+  ShieldCheck,
+  Users,
+  Stethoscope,
+  Store,
+  Activity,
+  AlertCircle,
+  CheckCircle2,
+  Clock,
+  ArrowRight,
+  TrendingUp,
+  FileText,
+  Shield,
+  AlertTriangle,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+export default function AdminPortalPage() {
+  return (
+    <div className="py-8 max-w-6xl mx-auto space-y-8 pb-24 px-4 sm:px-6">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full border border-border bg-secondary px-3 py-1 text-xs font-semibold text-foreground mb-3">
+            <ShieldCheck className="h-3.5 w-3.5 stroke-[1.5]" />
+            Network Operations Center
+          </div>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+            Platform Administration
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground font-medium">
+            System uptime: 99.99% • Data sync: Real-time • Active node: us-west-1
+          </p>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Button variant="outline" size="sm" className="rounded-full text-xs" asChild>
+            <Link href="/admin/verifications/pharmacies">
+              <Store className="h-3.5 w-3.5 mr-1.5 text-primary" />
+              Pharmacy Queue (1 Pending)
+            </Link>
+          </Button>
+
+          <Button size="sm" className="rounded-full text-xs" asChild>
+            <Link href="/admin/verifications">
+              <Stethoscope className="h-3.5 w-3.5 mr-1.5" />
+              Doctor Queue (2 Pending)
+            </Link>
+          </Button>
+        </div>
+      </div>
+
+      {/* Metrics Row */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="rounded-3xl border border-border bg-card shadow-apple-sm p-6 space-y-2">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-wide">Total Patients</span>
+            <Users className="h-4 w-4 stroke-[1.5]" />
+          </div>
+          <p className="text-3xl font-semibold text-foreground tracking-tight">1.2M+</p>
+          <p className="text-xs text-emerald-600 font-medium">↑ 12% this month</p>
+        </div>
+
+        <div className="rounded-3xl border border-border bg-card shadow-apple-sm p-6 space-y-2">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-wide">Active Doctors</span>
+            <Stethoscope className="h-4 w-4 stroke-[1.5]" />
+          </div>
+          <p className="text-3xl font-semibold text-foreground tracking-tight">14,029</p>
+          <p className="text-xs text-muted-foreground">12 pending verification</p>
+        </div>
+
+        <div className="rounded-3xl border border-border bg-card shadow-apple-sm p-6 space-y-2">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-wide">Network Pharmacies</span>
+            <Store className="h-4 w-4 stroke-[1.5]" />
+          </div>
+          <p className="text-3xl font-semibold text-foreground tracking-tight">3,492</p>
+          <p className="text-xs text-muted-foreground">Across 50 states</p>
+        </div>
+
+        <div className="rounded-3xl border border-border bg-card shadow-apple-sm p-6 space-y-2">
+          <div className="flex items-center justify-between text-muted-foreground">
+            <span className="text-xs font-semibold uppercase tracking-wide">Support Tickets</span>
+            <AlertTriangle className="h-4 w-4 stroke-[1.5]" />
+          </div>
+          <p className="text-3xl font-semibold text-foreground tracking-tight">24</p>
+          <p className="text-xs text-amber-600 font-medium">Requiring attention</p>
+        </div>
+      </div>
+
+      {/* Verification & Management Action Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Pharmacy Governance */}
+        <div className="rounded-3xl border border-border bg-card p-6 shadow-apple-sm space-y-4 flex flex-col justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Store className="h-5 w-5 text-foreground" />
+                <h3 className="text-base font-semibold text-foreground">Pharmacy Network Governance</h3>
+              </div>
+              <span className="rounded-full bg-amber-500/10 text-amber-600 px-2.5 py-0.5 text-xs font-bold">
+                Action Required
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Review California and nationwide state pharmacy board licenses, NCPDP identifiers, and courier dispatch radius.
+            </p>
+          </div>
+
+          <div className="space-y-2 rounded-2xl bg-secondary/30 p-4 border border-border/50 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-foreground">Community Care Wellness Pharmacy</span>
+              <span className="text-amber-500 font-semibold">Under Review</span>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              License CA-RPH-649108 • 120 California Ave, Palo Alto
+            </p>
+          </div>
+
+          <Button size="sm" className="rounded-full text-xs" asChild>
+            <Link href="/admin/verifications/pharmacies">
+              Open Pharmacy Review Queue
+              <ArrowRight className="h-3.5 w-3.5 ml-1" />
+            </Link>
+          </Button>
+        </div>
+
+        {/* Doctor Verification */}
+        <div className="rounded-3xl border border-border bg-card p-6 shadow-sm space-y-4 flex flex-col justify-between">
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <Stethoscope className="h-5 w-5 text-emerald-600" />
+                <h3 className="text-base font-semibold text-foreground">Physician Credentialing</h3>
+              </div>
+              <span className="rounded-full bg-amber-500/10 text-amber-600 px-2.5 py-0.5 text-xs font-bold">
+                Action Required
+              </span>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Inspect medical degree transcripts, state medical board licenses, and DEA schedule registrations.
+            </p>
+          </div>
+
+          <div className="space-y-2 rounded-2xl bg-secondary/30 p-4 border border-border/50 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-foreground">Dr. Marcus Vance, MD</span>
+              <span className="text-amber-500 font-semibold">Under Review</span>
+            </div>
+            <p className="text-[11px] text-muted-foreground">
+              Neurology & Sleep Medicine • Medical Board of California
+            </p>
+          </div>
+
+          <Button size="sm" variant="outline" className="rounded-full text-xs" asChild>
+            <Link href="/admin/verifications">
+              Open Doctor Credentialing Queue
+              <ArrowRight className="h-3.5 w-3.5 ml-1" />
+            </Link>
+          </Button>
+        </div>
+      </div>
+
+      {/* Platform Administration Hub Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <Link
+          href="/admin/users"
+          className="rounded-3xl border border-border bg-card p-6 shadow-apple-sm hover:shadow-apple-md transition-shadow group block space-y-4"
+        >
+          <div className="flex items-center justify-between text-foreground">
+            <div className="h-10 w-10 rounded-2xl bg-secondary flex items-center justify-center">
+              <Users className="h-5 w-5 stroke-[1.5]" />
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground text-base tracking-tight mb-1">User Directory</h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Audit patients, licensed physicians, pharmacists, and staff role permissions.
+            </p>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/complaints"
+          className="rounded-3xl border border-border bg-card p-6 shadow-apple-sm hover:shadow-apple-md transition-shadow group block space-y-4"
+        >
+          <div className="flex items-center justify-between text-foreground">
+            <div className="h-10 w-10 rounded-2xl bg-secondary flex items-center justify-center">
+              <AlertCircle className="h-5 w-5 stroke-[1.5]" />
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground text-base tracking-tight mb-1">Support Complaints</h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Track and resolve patient disputes, dispensing delays, and telehealth inquiries.
+            </p>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/analytics"
+          className="rounded-3xl border border-border bg-card p-6 shadow-apple-sm hover:shadow-apple-md transition-shadow group block space-y-4"
+        >
+          <div className="flex items-center justify-between text-foreground">
+            <div className="h-10 w-10 rounded-2xl bg-secondary flex items-center justify-center">
+              <Activity className="h-5 w-5 stroke-[1.5]" />
+            </div>
+            <ArrowRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-1 transition-all" />
+          </div>
+          <div>
+            <h4 className="font-semibold text-foreground text-base tracking-tight mb-1">Telemetry Analytics</h4>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Explore consultation volume, e-Rx turnaround times, and multi-modal AI scans.
+            </p>
+          </div>
+        </Link>
+      </div>
+
+      {/* Platform Real-Time Systems Health & Compliance */}
+      <div className="rounded-3xl border border-border bg-card p-8 shadow-apple-md space-y-8">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-6">
+          <div>
+            <h3 className="text-lg font-semibold tracking-tight text-foreground">
+              System Infrastructure & Compliance Health
+            </h3>
+            <p className="text-sm text-muted-foreground mt-1">
+              Continuous monitoring across CARE360 interconnected clinical services.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2 text-sm text-foreground font-semibold">
+            <span className="h-2 w-2 rounded-full bg-primary" />
+            <span>All Systems Nominal</span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="rounded-2xl bg-secondary p-5 border border-border space-y-2">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">NCPDP SCRIPT Gateway</span>
+            <p className="font-semibold text-foreground text-lg tracking-tight">Active (v2017071)</p>
+            <p className="text-xs text-muted-foreground font-medium">99.99% successful e-Rx transmission</p>
+          </div>
+
+          <div className="rounded-2xl bg-secondary p-5 border border-border space-y-2">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">WebRTC Video Latency</span>
+            <p className="font-semibold text-foreground text-lg tracking-tight">48 ms (P95)</p>
+            <p className="text-xs text-muted-foreground font-medium">Zero dropped clinical sessions</p>
+          </div>
+
+          <div className="rounded-2xl bg-secondary p-5 border border-border space-y-2">
+            <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">Cryptographic Audit Seal</span>
+            <p className="font-semibold text-foreground text-lg tracking-tight">SHA-256 Validated</p>
+            <p className="text-xs text-muted-foreground font-medium">Tamper detection enabled</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
