@@ -66,7 +66,7 @@ export function Hero() {
     } catch {}
 
     setTimeout(() => {
-      router.push(`/${role}`);
+      window.location.href = `/${role}`;
     }, 350);
   };
 

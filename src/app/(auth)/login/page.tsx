@@ -67,7 +67,7 @@ function LoginContent() {
       // Smooth state transition
       setTimeout(() => {
         const dest = redirectPath === "/" ? `/${user.role}` : redirectPath;
-        router.push(dest);
+        window.location.href = dest;
       }, 400);
     } catch {
       setError("An unexpected error occurred. Please try again.");
@@ -91,13 +91,13 @@ function LoginContent() {
       setTimeout(() => {
         if (user) {
           const dest = redirectPath === "/" ? `/${user.role}` : redirectPath;
-          router.push(dest);
+          window.location.href = dest;
         } else {
-          router.push(`/${role}`);
+          window.location.href = `/${role}`;
         }
       }, 500);
     } catch {
-      router.push(`/${role}`);
+      window.location.href = `/${role}`;
     }
   };
 

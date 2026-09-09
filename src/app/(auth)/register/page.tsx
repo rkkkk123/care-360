@@ -63,7 +63,7 @@ function RegisterContent() {
         return;
       }
 
-      router.push("/verify");
+      window.location.href = "/verify";
     } catch {
       setError("An unexpected error occurred. Please try again.");
     }

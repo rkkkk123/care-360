@@ -118,12 +118,12 @@ export function PortalSection() {
                 </div>
 
                 <div className="pt-8 mt-6 border-t border-border/50">
-                  <Link
+                  <a
                     href={`/api/demo-login?role=${portal.title.split(" ")[0].toLowerCase()}`}
                     className="inline-flex items-center justify-center w-full rounded-full bg-secondary hover:bg-foreground text-foreground hover:text-background px-4 py-3 text-sm font-semibold transition-colors duration-200"
                   >
                     <span>Enter {portal.title}</span>
-                  </Link>
+                  </a>
                 </div>
               </div>
             </StaggerItem>

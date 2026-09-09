@@ -59,7 +59,7 @@ export default function PharmacyOnboarding() {
         console.error(err);
       }
       setTimeout(() => {
-        router.push("/pharmacy");
+        window.location.href = "/pharmacy";
       }, 400);
     }
   };

@@ -60,7 +60,7 @@ export default function DoctorOnboarding() {
         console.error(err);
       }
       setTimeout(() => {
-        router.push("/doctor");
+        window.location.href = "/doctor";
       }, 400);
     }
   };

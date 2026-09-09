@@ -85,7 +85,7 @@ export default function PatientOnboarding() {
         console.error(err);
       }
       setTimeout(() => {
-        router.push("/patient");
+        window.location.href = "/patient";
       }, 400);
     }
   };
