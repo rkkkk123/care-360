@@ -6,7 +6,8 @@ import { createCorsair } from "corsair";
 import { github } from "@corsair-dev/github";
 
 // Initialize SQLite database for Corsair credentials & state
-const corsairDir = path.join(process.cwd(), ".corsair");
+const isVercel = Boolean(process.env.VERCEL);
+const corsairDir = isVercel ? path.join("/tmp", ".corsair") : path.join(process.cwd(), ".corsair");
 if (!fs.existsSync(corsairDir)) {
   fs.mkdirSync(corsairDir, { recursive: true });
 }
