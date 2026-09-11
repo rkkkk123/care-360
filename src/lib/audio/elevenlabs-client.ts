@@ -9,7 +9,7 @@ export async function generateSpeech(
 
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 7000); // 7s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout
 
     const response = await fetch("/api/ai/tts", {
       method: "POST",

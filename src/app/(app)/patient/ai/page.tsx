@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { VoiceOrb } from "@/components/ui/VoiceOrb";
-import { speakTextWithFallback, SpeechPlaybackControls } from "@/lib/audio/speech-synthesis";
+import { speakTextWithFallback, unlockAudioContext, SpeechPlaybackControls } from "@/lib/audio/speech-synthesis";
 import { useAIHistoryStore, ChatMessage } from "@/lib/ai/ai-history-store";
 
 type VoiceSessionState = "idle" | "listening" | "processing" | "speaking";
@@ -149,6 +149,7 @@ export default function AIPage() {
 
   // Start Voice Session (Listening Mode)
   const startListening = () => {
+    unlockAudioContext();
     stopAllAudio();
     if (autoCloseTimerRef.current) {
       clearTimeout(autoCloseTimerRef.current);
@@ -323,6 +324,7 @@ export default function AIPage() {
 
   // Speak specific text from message item
   const speakSpecificMessage = async (msgId: string, text: string) => {
+    unlockAudioContext();
     if (activeSpeakingMessageId === msgId) {
       stopAllAudio();
       return;
@@ -404,6 +406,7 @@ export default function AIPage() {
   };
 
   const handleOrbClick = () => {
+    unlockAudioContext();
     if (voiceState === "idle") {
       startListening();
     } else {

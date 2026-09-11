@@ -55,6 +55,7 @@ export function VoiceOrb({ isListening, isProcessing, isSpeaking, onClick, class
       {/* Core Orb Base */}
       <motion.button
         type="button"
+        onClick={onClick}
         className="relative z-10 w-full h-full rounded-full flex items-center justify-center cursor-pointer overflow-hidden bg-background shadow-lg border border-border/50"
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}

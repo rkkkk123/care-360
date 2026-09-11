@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 
 const getApiKey = () =>
-  process.env.ELEVENLABS_API_KEY ||
   process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY ||
-  "sk_40c03d9bbdf8d5ce33d7ee61252ed1d07aaef318b65f7e2f";
+  process.env.ELEVENLABS_API_KEY ||
+  "";
 
 // Default voice ID: Sarah (EXAVITQu4vr4xnSDxMaL) or Rachel (21m00Tcm4TlvDq8ikWAM)
 const DEFAULT_VOICE_ID = "EXAVITQu4vr4xnSDxMaL";
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
       .slice(0, 1000); // Guard against overly long payloads
 
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 6000);
+    const timeout = setTimeout(() => controller.abort(), 18000); // 18s timeout for high reliability
 
     const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
       method: "POST",
