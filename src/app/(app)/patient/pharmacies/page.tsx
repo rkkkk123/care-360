@@ -36,7 +36,10 @@ export default function PharmaciesDirectoryPage() {
   const [locationSearchQuery, setLocationSearchQuery] = React.useState("");
   const [isGeocoding, setIsGeocoding] = React.useState(false);
   
-  const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
+  const MAPBOX_TOKEN =
+    process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ||
+    process.env.NEXT_PUBLIC_MAPBOX_TOKEN ||
+    "";
 
   React.useEffect(() => {
     async function loadPharmacies() {

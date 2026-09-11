@@ -38,7 +38,10 @@ export class CopilotService {
     request: AICopilotRequest,
     context: AuthorizedHealthContext
   ): Promise<AICopilotResponse> {
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey =
+      process.env.NEXT_PUBLIC_GOOGLE_GEMINI_API_KEY ||
+      process.env.GOOGLE_GEMINI_API_KEY ||
+      process.env.GEMINI_API_KEY;
 
     if (apiKey) {
       try {
