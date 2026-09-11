@@ -7,6 +7,7 @@ import { MedicalEvolutionSection } from "@/components/marketing/MedicalEvolution
 import { ProblemSection } from "@/components/marketing/ProblemSection";
 import { CareLoop } from "@/components/marketing/CareLoop";
 import { AISection } from "@/components/marketing/AISection";
+import { CareConnectSection } from "@/components/marketing/CareConnectSection";
 import { DoctorTrustSection } from "@/components/marketing/DoctorTrustSection";
 import { PharmacySection } from "@/components/marketing/PharmacySection";
 import { HealthTimelineSection } from "@/components/marketing/HealthTimelineSection";
@@ -16,6 +17,7 @@ import { TrustSection } from "@/components/marketing/TrustSection";
 import { AccessibilitySection } from "@/components/marketing/AccessibilitySection";
 import { TestimonialSection } from "@/components/marketing/TestimonialSection";
 import { FinalCTA } from "@/components/marketing/FinalCTA";
+import { PoweredBySection } from "@/components/marketing/PoweredBySection";
 import Care360Intro from "@/components/intro/Care360Intro";
 
 export default function Home() {
@@ -56,10 +58,12 @@ export default function Home() {
 
       <div className={`bg-background min-h-screen text-foreground transition-colors duration-200 ${showIntro ? 'h-screen overflow-hidden' : ''}`}>
         <Hero />
+        <PoweredBySection />
         <MedicalEvolutionSection />
         <ProblemSection />
         <CareLoop />
         <AISection />
+        <CareConnectSection />
         <DoctorTrustSection />
         <PharmacySection />
         <HealthTimelineSection />

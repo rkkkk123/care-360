@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import { User, Stethoscope, Store, Shield, Settings2, X, ChevronRight } from "lucide-react";
 import { auth } from "@/lib/auth/auth-service";
 
@@ -53,25 +53,13 @@ export function GlobalPrototypeSwitcher() {
 
   React.useEffect(() => setMounted(true), []);
 
-  const handleSwitch = async (role: typeof roles[0]) => {
+  const handleSwitch = (role: typeof roles[0]) => {
     setIsSwitching(role.id);
-    try {
-      // Automatically bypass any login barriers for prototype seamlessness
-      await auth.signIn({
-        email: role.email,
-        password: "Care360Secure!",
-      });
-      // Force a hard navigation so the Next.js middleware correctly reads the new cookie
-      // and server components re-render with the new session, avoiding 'access denied'.
-      window.location.href = role.path;
-      setTimeout(() => {
-        setIsOpen(false);
-        setIsSwitching(null);
-      }, 500);
-    } catch (e) {
-      console.error("Failed to switch role", e);
+    router.push(role.path);
+    setTimeout(() => {
+      setIsOpen(false);
       setIsSwitching(null);
-    }
+    }, 200);
   };
 
   if (!mounted) return null;
@@ -85,9 +73,9 @@ export function GlobalPrototypeSwitcher() {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-[9999] h-14 w-14 rounded-full bg-foreground text-background shadow-apple-lg flex items-center justify-center border-2 border-background/20 backdrop-blur-md hover:shadow-apple-xl transition-shadow"
+        className="fixed bottom-20 right-4 md:bottom-6 md:right-6 z-[9999] h-12 w-12 md:h-14 md:w-14 rounded-full bg-foreground text-background shadow-apple-lg flex items-center justify-center border-2 border-background/20 backdrop-blur-md hover:shadow-apple-xl transition-shadow"
       >
-        <Settings2 className="w-6 h-6" />
+        <Settings2 className="w-5 h-5 md:w-6 md:h-6" />
       </motion.button>
 
       {/* Popover Menu */}
@@ -106,7 +94,7 @@ export function GlobalPrototypeSwitcher() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed bottom-24 right-6 z-[9999] w-[320px] rounded-3xl bg-card border border-border shadow-apple-xl overflow-hidden"
+              className="fixed bottom-36 right-4 left-4 sm:left-auto sm:right-6 z-[9999] sm:w-[320px] rounded-3xl bg-card border border-border shadow-apple-xl overflow-hidden"
             >
               <div className="p-4 border-b border-border bg-secondary/50 flex items-center justify-between">
                 <div>

@@ -3,6 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Container } from "@/components/shared/Container";
 import { FadeIn } from "@/components/motion/FadeIn";
 import { Button } from "@/components/ui/button";
@@ -22,9 +23,6 @@ import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 import { auth } from "@/lib/auth/auth-service";
 
 export function Hero() {
-  const router = useRouter();
-  const [loadingRole, setLoadingRole] = React.useState<string | null>(null);
-
   const [isHovering, setIsHovering] = React.useState(false);
   const mouseX = useMotionValue(-1000);
   const mouseY = useMotionValue(-1000);
@@ -48,27 +46,6 @@ export function Hero() {
 
   const handleMouseEnter = () => setIsHovering(true);
   const handleMouseLeave = () => setIsHovering(false);
-
-  const handleQuickLaunch = async (role: "patient" | "doctor" | "pharmacy" | "admin") => {
-    setLoadingRole(role);
-    const emails: Record<string, string> = {
-      patient: "jane.doe@care360.health",
-      doctor: "dr.sharma@care360.health",
-      pharmacy: "pharmacy@care360.health",
-      admin: "admin@care360.health",
-    };
-
-    try {
-      await auth.signIn({
-        email: emails[role],
-        password: "Care360Secure!",
-      });
-    } catch {}
-
-    setTimeout(() => {
-      window.location.href = `/${role}`;
-    }, 350);
-  };
 
   return (
     <section 
@@ -110,12 +87,30 @@ export function Hero() {
 
       <Container className="relative z-10">
         <div className="flex flex-col items-center text-center max-w-5xl mx-auto">
-          {/* Ecosystem Pill Badge */}
+          {/* Ecosystem Pill Badge: Powered by Corsair */}
           <FadeIn>
-            <div className="inline-flex items-center rounded-full border border-border bg-background/50 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-foreground mb-8 shadow-apple-sm">
-              <span className="flex h-1.5 w-1.5 rounded-full bg-primary mr-2 animate-pulse" />
-              <span>The Next-Generation Healthcare Infrastructure</span>
-            </div>
+            <Link
+              href="/admin/corsair"
+              className="group inline-flex items-center gap-2 rounded-full border border-border/80 bg-background/60 backdrop-blur-md px-4 py-1.5 text-xs font-semibold text-foreground mb-8 shadow-apple-sm hover:border-primary/50 hover:bg-background/90 transition-all duration-200 cursor-pointer"
+            >
+              <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="text-muted-foreground font-medium">Powered by</span>
+              <div className="flex items-center gap-1.5">
+                <Image
+                  src="/logos/corsair.png"
+                  alt="Corsair"
+                  width={18}
+                  height={18}
+                  className="w-4 h-4 object-contain group-hover:scale-110 transition-transform duration-200"
+                />
+                <span className="font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
+                  Corsair
+                </span>
+              </div>
+              <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/40 px-2 py-0.5 rounded-full ml-0.5">
+                Sub-50ms Engine
+              </span>
+            </Link>
           </FadeIn>
           
           {/* Main Title */}
@@ -143,21 +138,13 @@ export function Hero() {
           <FadeIn delay={0.3} className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
             <Button 
               size="lg" 
-              disabled={loadingRole !== null}
-              onClick={() => handleQuickLaunch("patient")}
+              asChild
               className="w-full sm:w-auto h-14 px-8 rounded-full bg-foreground text-background font-semibold text-sm hover:bg-foreground/90 transition-all duration-200 active:scale-[0.98] shadow-apple-md"
             >
-              {loadingRole === "patient" ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  <span>Initializing Core...</span>
-                </>
-              ) : (
-                <>
-                  <span>Enter Platform</span>
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </>
-              )}
+              <Link href="/patient">
+                <span>Enter Platform</span>
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
             </Button>
 
             <Button 
@@ -166,7 +153,7 @@ export function Hero() {
               className="w-full sm:w-auto h-14 px-8 rounded-full border-border bg-background/50 backdrop-blur-sm text-foreground font-semibold text-sm hover:bg-secondary transition-all duration-200 active:scale-[0.98]" 
               asChild
             >
-              <Link href="/how-it-works">
+              <Link href="/architecture">
                 View Architecture
               </Link>
             </Button>
@@ -179,41 +166,33 @@ export function Hero() {
                 Access Portals:
               </span>
               <div className="flex flex-wrap items-center justify-center gap-4">
-                <button
-                  type="button"
-                  onClick={() => handleQuickLaunch("patient")}
-                  disabled={loadingRole !== null}
+                <Link
+                  href="/patient"
                   className="inline-flex items-center gap-1.5 text-foreground text-sm font-semibold hover:text-primary transition-colors cursor-pointer"
                 >
                   <User className="w-3.5 h-3.5" /> Patient
-                </button>
+                </Link>
                 <span className="text-border text-xs">•</span>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLaunch("doctor")}
-                  disabled={loadingRole !== null}
+                <Link
+                  href="/doctor"
                   className="inline-flex items-center gap-1.5 text-foreground text-sm font-semibold hover:text-primary transition-colors cursor-pointer"
                 >
                   <Stethoscope className="w-3.5 h-3.5" /> Doctor
-                </button>
+                </Link>
                 <span className="text-border text-xs">•</span>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLaunch("pharmacy")}
-                  disabled={loadingRole !== null}
+                <Link
+                  href="/pharmacy"
                   className="inline-flex items-center gap-1.5 text-foreground text-sm font-semibold hover:text-primary transition-colors cursor-pointer"
                 >
                   <Store className="w-3.5 h-3.5" /> Pharmacy
-                </button>
+                </Link>
                 <span className="text-border text-xs">•</span>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLaunch("admin")}
-                  disabled={loadingRole !== null}
+                <Link
+                  href="/admin"
                   className="inline-flex items-center gap-1.5 text-foreground text-sm font-semibold hover:text-primary transition-colors cursor-pointer"
                 >
                   <ShieldCheck className="w-3.5 h-3.5" /> Admin
-                </button>
+                </Link>
               </div>
             </div>
           </FadeIn>
@@ -221,7 +200,7 @@ export function Hero() {
 
         {/* World-Class Architecture Diagram */}
         <FadeIn delay={0.5} className="mt-24 md:mt-32">
-          <div className="relative mx-auto max-w-6xl rounded-[2.5rem] bg-card/60 backdrop-blur-2xl border border-border/80 shadow-apple-lg overflow-hidden p-10 md:p-16">
+          <div className="relative mx-auto max-w-6xl rounded-3xl sm:rounded-[2.5rem] bg-card/60 backdrop-blur-2xl border border-border/80 shadow-apple-lg overflow-hidden p-5 sm:p-10 md:p-16">
             
             <div className="text-center mb-12 relative z-10">
               <h3 className="text-xl md:text-2xl font-bold tracking-tight text-foreground">Platform Architecture Topology</h3>

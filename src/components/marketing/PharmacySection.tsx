@@ -8,7 +8,7 @@ import { MapPin, Truck, Store, ChevronRight } from "lucide-react";
 
 export function PharmacySection() {
   return (
-    <Section className="bg-secondary/30">
+    <Section id="pharmacy" className="bg-secondary/30 scroll-mt-20">
       <Container>
         <div className="flex flex-col lg:flex-row gap-16 items-center">
           <Reveal direction="right" className="w-full lg:w-1/2 order-2 lg:order-1">

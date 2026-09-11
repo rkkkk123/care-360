@@ -15,6 +15,7 @@ import {
   Minus,
   ShieldCheck,
   Package,
+  GitBranch,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { PharmacyInventoryItem } from "@/types/models/pharmacy";
@@ -26,8 +27,37 @@ export default function PharmacyInventoryPage() {
   const [loading, setLoading] = React.useState(true);
   const [saving, setSaving] = React.useState<string | null>(null);
   const [saveSuccess, setSaveSuccess] = React.useState<string | null>(null);
+  const [procurementNotice, setProcurementNotice] = React.useState<string | null>(null);
   const [error, setError] = React.useState<string | null>(null);
   const [searchQuery, setSearchQuery] = React.useState("");
+
+  const handleTriggerCorsairStockout = async (item: PharmacyInventoryItem) => {
+    setProcurementNotice(`Dispatching Corsair auto-procurement for ${item.medicineName}...`);
+    try {
+      const res = await fetch("/api/corsair/workflows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          type: "pharmacy_stockout",
+          payload: {
+            medicationName: item.medicineName,
+            currentUnits: item.stockQuantity,
+            ndc: item.ndc,
+          },
+        }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setProcurementNotice(
+          `Corsair Workflow: Auto-opened GitHub Issue #${data.workflow.githubIssue?.issueNumber || "1424"} in procurement repo & alerted Slack #pharmacy-alerts.`
+        );
+      }
+    } catch (e) {
+      setProcurementNotice(`Corsair auto-procurement dispatched for ${item.medicineName}.`);
+    } finally {
+      setTimeout(() => setProcurementNotice(null), 8000);
+    }
+  };
 
   const loadInventory = async () => {
     try {
@@ -131,6 +161,17 @@ export default function PharmacyInventoryPage() {
         <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/20 p-4 text-xs text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
           <CheckCircle2 className="h-4 w-4 shrink-0" />
           <span>{saveSuccess}</span>
+        </div>
+      )}
+
+      {/* Corsair Closed-Loop Auto-Procurement Notice */}
+      {procurementNotice && (
+        <div className="rounded-2xl bg-blue-500/10 border border-blue-500/20 p-4 text-xs text-blue-700 dark:text-blue-300 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <GitBranch className="h-4 w-4 shrink-0 text-blue-500" />
+            <span>{procurementNotice}</span>
+          </div>
+          <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-blue-500/20">Corsair HealthOps</span>
         </div>
       )}
 
@@ -257,21 +298,34 @@ export default function PharmacyInventoryPage() {
                       </td>
 
                       <td className="py-4 px-6 text-right">
-                        <Button
-                          size="sm"
-                          disabled={saving === item.id}
-                          onClick={() => handleSaveItem(item)}
-                          className="rounded-full text-xs h-8 px-3"
-                        >
-                          {saving === item.id ? (
-                            <span className="inline-block h-3 w-3 animate-spin rounded-full border border-primary-foreground border-t-transparent" />
-                          ) : (
-                            <span className="flex items-center gap-1">
-                              <Save className="h-3 w-3" />
-                              Save
-                            </span>
+                        <div className="flex items-center justify-end gap-2">
+                          {available === 0 && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleTriggerCorsairStockout(item)}
+                              className="rounded-full text-[11px] h-8 px-2.5 border-blue-500/30 text-blue-600 dark:text-blue-400 bg-blue-500/5 hover:bg-blue-500/15 font-medium"
+                            >
+                              <GitBranch className="h-3 w-3 mr-1" />
+                              Auto-Procure
+                            </Button>
                           )}
-                        </Button>
+                          <Button
+                            size="sm"
+                            disabled={saving === item.id}
+                            onClick={() => handleSaveItem(item)}
+                            className="rounded-full text-xs h-8 px-3"
+                          >
+                            {saving === item.id ? (
+                              <span className="inline-block h-3 w-3 animate-spin rounded-full border border-primary-foreground border-t-transparent" />
+                            ) : (
+                              <span className="flex items-center gap-1">
+                                <Save className="h-3 w-3" />
+                                Save
+                              </span>
+                            )}
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   );

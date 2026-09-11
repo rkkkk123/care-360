@@ -9,7 +9,8 @@
 // ── Phase constants ────────────────────────────────────────────────
 export const PHASE = {
   IDLE: 0,
-  PULSE: 1,
+  DNA: 1,
+  PULSE: 1, // backward compatibility
   WAVEFORM: 2,
   DISPERSE: 3,
   TYPOGRAPHY: 4,
@@ -226,15 +227,106 @@ export class ParticleEngine {
       const s = this.seed[i];
 
       switch (phase) {
-        case PHASE.PULSE: {
-          const r = this.pulseIntensity * 6;
-          this.tx[i] = Math.cos(s + time * 2) * r * (0.5 + this.z[i]);
-          this.ty[i] = Math.sin(s + time * 2) * r * (0.5 + this.z[i]);
-          this.opacity[i] = lerp(
-            this.opacity[i],
-            0.3 + this.pulseIntensity * 0.6,
-            0.05 * dt,
-          );
+        case PHASE.DNA: {
+          const h = Math.min(this.height * 0.75, 580);
+          const r = Math.min(this.width, this.height) * 0.17;
+          const rot = time * 1.6;
+          const turns = 2.4;
+          const tilt = -0.18;
+          const cosT = Math.cos(tilt);
+          const sinT = Math.sin(tilt);
+          const strandCount = Math.floor(ac * 0.35);
+          const rungCount = Math.floor(ac * 0.2);
+          const numRungs = 26;
+          const fov = 650;
+
+          if (i < strandCount) {
+            // Strand A (Emerald Helix)
+            const t = i / Math.max(1, strandCount);
+            const y0 = (t - 0.5) * h;
+            const theta = t * turns * TAU + rot;
+            const x0 = Math.cos(theta) * r;
+            const z0 = Math.sin(theta) * r;
+
+            const x3d = x0 * cosT - y0 * sinT;
+            const y3d = x0 * sinT + y0 * cosT;
+            const z3d = z0;
+
+            const scale = fov / (fov - z3d);
+            this.tx[i] = x3d * scale;
+            this.ty[i] = y3d * scale;
+            const depth = (z3d + r) / (2 * r);
+            this.z[i] = Math.max(0, Math.min(1, depth));
+            this.opacity[i] = lerp(this.opacity[i], 0.35 + this.z[i] * 0.65, 0.08 * dt);
+          } else if (i < strandCount * 2) {
+            // Strand B (Orange Helix - opposing 180° twist)
+            const idx = i - strandCount;
+            const t = idx / Math.max(1, strandCount);
+            const y0 = (t - 0.5) * h;
+            const theta = t * turns * TAU + rot + Math.PI;
+            const x0 = Math.cos(theta) * r;
+            const z0 = Math.sin(theta) * r;
+
+            const x3d = x0 * cosT - y0 * sinT;
+            const y3d = x0 * sinT + y0 * cosT;
+            const z3d = z0;
+
+            const scale = fov / (fov - z3d);
+            this.tx[i] = x3d * scale;
+            this.ty[i] = y3d * scale;
+            const depth = (z3d + r) / (2 * r);
+            this.z[i] = Math.max(0, Math.min(1, depth));
+            this.opacity[i] = lerp(this.opacity[i], 0.35 + this.z[i] * 0.65, 0.08 * dt);
+          } else if (i < strandCount * 2 + rungCount) {
+            // Base-pair ladder rungs across strands
+            const idx = i - strandCount * 2;
+            const rungIdx = idx % numRungs;
+            const rungT = (rungIdx + 0.5) / numRungs;
+            const u = ((Math.floor(idx / numRungs)) % 12) / 11;
+            const y0 = (rungT - 0.5) * h;
+            const theta = rungT * turns * TAU + rot;
+
+            const xA = Math.cos(theta) * r;
+            const zA = Math.sin(theta) * r;
+            const xB = Math.cos(theta + Math.PI) * r;
+            const zB = Math.sin(theta + Math.PI) * r;
+
+            const x0 = lerp(xA, xB, u);
+            const z0 = lerp(zA, zB, u);
+
+            const x3d = x0 * cosT - y0 * sinT;
+            const y3d = x0 * sinT + y0 * cosT;
+            const z3d = z0;
+
+            const scale = fov / (fov - z3d);
+            this.tx[i] = x3d * scale;
+            this.ty[i] = y3d * scale;
+            const depth = (z3d + r) / (2 * r);
+            this.z[i] = Math.max(0, Math.min(1, depth));
+            this.opacity[i] = lerp(this.opacity[i], 0.25 + this.z[i] * 0.55, 0.08 * dt);
+          } else {
+            // Ambient bio-luminescent cellular ions
+            const auraIdx = i - (strandCount * 2 + rungCount);
+            const totalAura = Math.max(1, ac - (strandCount * 2 + rungCount));
+            const t = auraIdx / totalAura;
+            const y0 = (t - 0.5) * h * 1.15 + Math.sin(s + time) * 15;
+            const orbitR = r * (1.2 + 0.6 * Math.sin(s * 2 + time * 0.8));
+            const angle = s + rot * 0.6;
+
+            const x0 = Math.cos(angle) * orbitR;
+            const z0 = Math.sin(angle) * orbitR;
+
+            const x3d = x0 * cosT - y0 * sinT;
+            const y3d = x0 * sinT + y0 * cosT;
+            const z3d = z0;
+
+            const scale = fov / (fov - z3d);
+            this.tx[i] = x3d * scale;
+            this.ty[i] = y3d * scale;
+            const depth = (z3d + orbitR) / (2 * orbitR);
+            this.z[i] = Math.max(0, Math.min(1, depth));
+            this.opacity[i] = lerp(this.opacity[i], 0.12 + 0.2 * Math.sin(s + time * 3), 0.06 * dt);
+          }
           break;
         }
 
@@ -434,8 +526,68 @@ export class ParticleEngine {
       }
     }
 
+    // ── Draw DNA base-pair rungs ───────────────────────────────
+    if (this.phase === PHASE.DNA && this.activeCount > 80) {
+      const h = Math.min(this.height * 0.75, 580);
+      const r = Math.min(this.width, this.height) * 0.17;
+      const rot = this.time * 1.6;
+      const turns = 2.4;
+      const tilt = -0.18;
+      const cosT = Math.cos(tilt);
+      const sinT = Math.sin(tilt);
+      const numRungs = 26;
+      const fov = 650;
+
+      for (let rIdx = 0; rIdx < numRungs; rIdx++) {
+        const rungT = (rIdx + 0.5) / numRungs;
+        const y0 = (rungT - 0.5) * h;
+        const theta = rungT * turns * TAU + rot;
+
+        const x0A = Math.cos(theta) * r;
+        const z0A = Math.sin(theta) * r;
+        const x0B = Math.cos(theta + Math.PI) * r;
+        const z0B = Math.sin(theta + Math.PI) * r;
+
+        const x3dA = x0A * cosT - y0 * sinT;
+        const y3dA = x0A * sinT + y0 * cosT;
+        const x3dB = x0B * cosT - y0 * sinT;
+        const y3dB = x0B * sinT + y0 * cosT;
+
+        const scaleA = fov / (fov - z0A);
+        const scaleB = fov / (fov - z0B);
+
+        const ax = x3dA * scaleA;
+        const ay = y3dA * scaleA;
+        const bx = x3dB * scaleB;
+        const by = y3dB * scaleB;
+
+        const avgZ = (z0A + z0B) * 0.5;
+        const depthNorm = Math.max(0, Math.min(1, (avgZ + r) / (2 * r)));
+        const rungAlpha = (0.05 + depthNorm * 0.2) * this.globalOpacity;
+
+        if (rungAlpha > 0.01) {
+          const grad = ctx.createLinearGradient(ax, ay, bx, by);
+          grad.addColorStop(0, `rgba(52,199,89,${rungAlpha * 0.9})`);
+          grad.addColorStop(0.5, `rgba(224,242,254,${rungAlpha * 1.3})`);
+          grad.addColorStop(1, `rgba(249,115,22,${rungAlpha * 0.9})`);
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = Math.max(0.6, 1.2 * scaleA);
+          ctx.beginPath();
+          ctx.moveTo(ax, ay);
+          ctx.lineTo(bx, by);
+          ctx.stroke();
+        }
+      }
+    }
+
     // ── Draw particles ───────────────────────────────────────────
     const go = this.globalOpacity;
+    const isDNA = this.phase === PHASE.DNA;
+    const isLogo = this.phase === PHASE.LOGO || this.phase === PHASE.FINAL;
+    const strandCount = Math.floor(this.count * 0.35);
+    const rungCount = Math.floor(this.count * 0.2);
+    const careTargetCount = Math.floor(this.count * 0.55);
+
     for (let i = 0; i < this.count; i++) {
       const a = this.opacity[i] * go;
       if (a < 0.005) continue;
@@ -444,10 +596,27 @@ export class ParticleEngine {
       const px = this.x[i];
       const py = this.y[i];
 
+      let color = "#F5F5F7";
+      if (isDNA) {
+        if (i < strandCount) {
+          color = "#6EE7A0"; // Emerald Strand A
+        } else if (i < strandCount * 2) {
+          color = "#FDBA74"; // Orange Strand B
+        } else if (i < strandCount * 2 + rungCount) {
+          color = "#E0F2FE"; // Cyan Rungs
+        }
+      } else if (isLogo) {
+        if (i < careTargetCount) {
+          color = "#FB923C"; // CARE Orange
+        } else if (i < this.logoTargets.length) {
+          color = "#4ADE80"; // 360 Green
+        }
+      }
+
       // Glow layer
       if (a > 0.08 && sz > 0.8) {
-        ctx.globalAlpha = a * 0.15;
-        ctx.fillStyle = "#F5F5F7";
+        ctx.globalAlpha = a * 0.16;
+        ctx.fillStyle = color;
         ctx.beginPath();
         ctx.arc(px, py, sz * 3.5, 0, TAU);
         ctx.fill();
@@ -455,7 +624,7 @@ export class ParticleEngine {
 
       // Core particle
       ctx.globalAlpha = a;
-      ctx.fillStyle = "#F5F5F7";
+      ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(px, py, sz, 0, TAU);
       ctx.fill();

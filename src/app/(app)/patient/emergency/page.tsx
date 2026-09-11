@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 import {
   AlertTriangle,
   Phone,
@@ -63,6 +63,21 @@ export default function EmergencyCarePage() {
   const handleTriggerDispatch = () => {
     if (dispatchState !== "idle") return;
     setDispatchState("dispatching");
+
+    // Non-blocking fire-and-forget to Corsair HealthOps Closed-Loop Workflow
+    fetch("/api/corsair/workflows", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        type: "emergency_sos",
+        payload: {
+          patientName: "Jane Doe (Medical ID: CARE-8891)",
+          location: "Palo Alto Central Medical District (GPS: 37.4419° N, 122.1430° W)",
+          priority: "Critical Level 1 Triage",
+        },
+      }),
+    }).catch((err) => console.warn("Corsair SOS hook notice:", err));
+
     setTimeout(() => {
       setDispatchState("en_route");
     }, 2000);

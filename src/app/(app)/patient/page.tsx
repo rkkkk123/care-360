@@ -14,6 +14,8 @@ import {
   Pill,
   Clock,
   ShieldCheck,
+  Bell,
+  Settings,
 } from "lucide-react";
 import { DashboardGreeting } from "@/features/patient/components/DashboardGreeting";
 import { HealthSnapshot } from "@/features/patient/components/HealthSnapshot";
@@ -40,6 +42,36 @@ export default function PatientDashboard() {
       
       {/* 1. Greeting / Context */}
       <DashboardGreeting patient={demoPatient} />
+
+      {/* Active Care Notification Banner */}
+      <div className="rounded-3xl border border-primary/20 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-xs">
+        <div className="flex items-start sm:items-center gap-3.5 min-w-0">
+          <div className="p-2.5 rounded-2xl bg-primary/10 text-primary shrink-0 mt-0.5 sm:mt-0">
+            <Bell className="w-4 h-4 animate-pulse" />
+          </div>
+          <div className="space-y-0.5 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-semibold text-foreground">Metformin 500mg ER Ready for Dispatch</span>
+              <span className="text-[10px] font-medium bg-amber-500/10 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20">
+                Walgreens #4190
+              </span>
+              <span className="text-[10px] font-mono text-muted-foreground">• 12m ago</span>
+            </div>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Virtual consultation with Dr. Ananya Sharma today at 2:30 PM PST. Pre-visit AI vitals summary ready.
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+          <Link
+            href="/patient/notifications"
+            className="text-xs font-semibold text-primary hover:underline flex items-center gap-1 bg-background border border-border px-3 py-1.5 rounded-full shadow-2xs hover:bg-secondary transition-colors"
+          >
+            <span>View All Notifications (3)</span>
+            <ArrowRight className="w-3 h-3" />
+          </Link>
+        </div>
+      </div>
 
       {/* 2. Ecosystem Quick Care Launchpad (All Tools at a Glance) */}
       <div className="space-y-3">

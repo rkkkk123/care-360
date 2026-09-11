@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Menu, X, Sparkles, Clock, Network, Store, Activity, BrainCircuit } from "lucide-react";
 import { Logo } from "@/components/shared/Logo";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "motion/react";
 
 const navSections = [
   { 
@@ -66,7 +66,12 @@ export function MarketingNavbar() {
 
   const handleSectionClick = (id: string, e: React.MouseEvent) => {
     e.preventDefault();
-    // Currently no-op or you can add scroll logic here if needed
+    setClickedSection(id);
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   return (
@@ -152,10 +157,10 @@ export function MarketingNavbar() {
         
         <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:items-center lg:gap-3">
           <Button variant="ghost" asChild className="text-foreground hover:text-primary">
-            <Link href="/login">Sign in</Link>
+            <Link href="/patient">Sign in</Link>
           </Button>
           <Button asChild className="rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm shadow-primary/20 px-5 font-semibold transition-all duration-200">
-            <Link href="/login">Enter CARE360</Link>
+            <Link href="/patient">Enter CARE360</Link>
           </Button>
         </div>
       </nav>
@@ -200,10 +205,10 @@ export function MarketingNavbar() {
                 </div>
                 <div className="py-6 flex flex-col gap-3">
                   <Button variant="outline" asChild className="w-full justify-center text-foreground">
-                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>Sign in</Link>
+                    <Link href="/patient" onClick={() => setMobileMenuOpen(false)}>Sign in</Link>
                   </Button>
                   <Button asChild className="w-full justify-center rounded-full bg-primary text-primary-foreground font-semibold">
-                    <Link href="/login" onClick={() => setMobileMenuOpen(false)}>Enter CARE360</Link>
+                    <Link href="/patient" onClick={() => setMobileMenuOpen(false)}>Enter CARE360</Link>
                   </Button>
                 </div>
               </div>

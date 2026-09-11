@@ -86,15 +86,15 @@ export function TestimonialSection() {
       {/* Marquee Container */}
       <div className="relative flex overflow-hidden w-full group py-6">
         {/* Left Fade */}
-        <div className="absolute left-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-r from-background to-transparent pointer-events-none" />
+        <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-16 md:w-32 z-10 bg-gradient-to-r from-background to-transparent pointer-events-none" />
         {/* Right Fade */}
-        <div className="absolute right-0 top-0 bottom-0 w-32 z-10 bg-gradient-to-l from-background to-transparent pointer-events-none" />
+        <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-16 md:w-32 z-10 bg-gradient-to-l from-background to-transparent pointer-events-none" />
 
-        <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] gap-6 px-4">
+        <div className="flex w-max animate-marquee group-hover:[animation-play-state:paused] gap-4 sm:gap-6 px-4">
           {scrollItems.map((testimonial, idx) => (
             <div
               key={`${testimonial.id}-${idx}`}
-              className="relative w-[300px] md:w-[350px] h-[420px] md:h-[480px] shrink-0 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all hover:-translate-y-2 duration-500 group/card"
+              className="relative w-[260px] sm:w-[310px] md:w-[350px] h-[380px] md:h-[480px] shrink-0 rounded-3xl overflow-hidden shadow-lg hover:shadow-xl transition-all hover:-translate-y-2 duration-500 group/card"
             >
               {/* Full Background Image */}
               <img

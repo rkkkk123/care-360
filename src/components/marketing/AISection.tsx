@@ -6,7 +6,7 @@ import { FileUp, Sparkles, Languages, Activity } from "lucide-react";
 
 export function AISection() {
   return (
-    <Section className="bg-secondary/30">
+    <Section id="ai" className="bg-secondary/30 scroll-mt-20">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <Reveal direction="right" className="order-2 lg:order-1">

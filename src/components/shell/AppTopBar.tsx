@@ -51,10 +51,11 @@ export function AppTopBar({ className }: AppTopBarProps = {}) {
             <button 
               type="button"
               onClick={() => setCommandPaletteOpen(true)}
-              className="flex items-center gap-2 w-full max-w-md bg-secondary/50 hover:bg-secondary border border-border/50 text-muted-foreground hover:text-foreground text-sm rounded-full px-4 py-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer text-left"
+              className="flex items-center gap-2 w-full max-w-md bg-secondary/50 hover:bg-secondary border border-border/50 text-muted-foreground hover:text-foreground text-xs sm:text-sm rounded-full px-3 sm:px-4 py-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary/20 cursor-pointer text-left"
             >
-              <Search className="h-4 w-4 text-primary" />
-              <span>Search CARE360 ecosystem...</span>
+              <Search className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary shrink-0" />
+              <span className="hidden sm:inline">Search CARE360 ecosystem...</span>
+              <span className="sm:hidden">Search...</span>
               <kbd className="ml-auto pointer-events-none hidden h-5 select-none items-center gap-1 rounded border border-border bg-background px-1.5 font-mono text-[10px] font-medium opacity-100 sm:flex">
                 <span className="text-xs">&#8984;</span>K
               </kbd>

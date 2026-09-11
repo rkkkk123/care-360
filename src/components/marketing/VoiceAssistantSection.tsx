@@ -92,7 +92,7 @@ export function VoiceAssistantSection() {
               </div>
               
               {/* Dynamic Audio Visualizer Waves (Tricolor) */}
-              <div className="flex items-center justify-center gap-1.5 mt-10 h-10 pt-4 border-t border-border/50">
+              <div className="flex items-center justify-center gap-1 sm:gap-1.5 mt-10 h-10 pt-4 border-t border-border/50 overflow-hidden">
                 {[...Array(32)].map((_, i) => {
                   // Determine color based on position (Saffron, White, Green)
                   const isSaffron = i < 11;
@@ -102,7 +102,7 @@ export function VoiceAssistantSection() {
                   return (
                     <motion.div 
                       key={i}
-                      className={`w-1.5 ${colorClass} rounded-full`}
+                      className={`w-1 sm:w-1.5 ${colorClass} rounded-full ${i >= 20 ? "hidden sm:block" : ""}`}
                       animate={{
                         height: ["20%", "100%", "30%", "90%", "20%"]
                       }}

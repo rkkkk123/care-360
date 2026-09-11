@@ -55,7 +55,7 @@ const EvolutionCard = ({ data, index, total }: { data: typeof evolutionData[0], 
   return (
     <div 
       ref={containerRef}
-      className="sticky top-0 h-screen w-full flex flex-col md:flex-row items-center justify-between overflow-hidden bg-white"
+      className="sticky top-0 min-h-screen md:h-screen w-full flex flex-col md:flex-row items-center justify-between overflow-hidden bg-white"
       style={{
         zIndex: index * 10,
         boxShadow: index > 0 ? "0 -20px 40px rgba(0,0,0,0.1)" : "none" // Creates drop shadow over previous section
@@ -66,33 +66,33 @@ const EvolutionCard = ({ data, index, total }: { data: typeof evolutionData[0], 
         className="w-full h-full flex flex-col md:flex-row origin-top"
       >
         {/* Left Side: Text */}
-        <div className="w-full md:w-[45%] h-full flex flex-col justify-center px-12 md:px-24 lg:px-32 bg-white relative z-20">
+        <div className="w-full md:w-[45%] h-auto md:h-full flex flex-col justify-center px-6 py-8 sm:px-12 md:px-20 lg:px-32 bg-white relative z-20">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-20%" }}
             transition={{ duration: 0.8, ease: "easeOut" }}
           >
-            <span className="text-sm font-semibold tracking-widest uppercase text-black/40 mb-4 block">
+            <span className="text-xs sm:text-sm font-semibold tracking-widest uppercase text-black/40 mb-2 sm:mb-4 block">
               {data.year}
             </span>
-            <h2 className="text-5xl md:text-6xl font-medium tracking-tight text-black mb-8 leading-[1.1]">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium tracking-tight text-black mb-4 sm:mb-8 leading-[1.15]">
               {data.title}
             </h2>
-            <p className="text-lg md:text-xl leading-relaxed text-black/70 font-light">
+            <p className="text-sm sm:text-base md:text-xl leading-relaxed text-black/70 font-light">
               {data.description}
             </p>
           </motion.div>
         </div>
 
         {/* Right Side: Image */}
-        <div className="w-full md:w-[55%] h-full relative flex items-center justify-center bg-white p-12 md:p-24 lg:p-32">
+        <div className="w-full md:w-[55%] h-auto md:h-full relative flex items-center justify-center bg-white px-6 pb-8 md:p-20 lg:p-32">
           <motion.div 
             initial={{ scale: 0.95, opacity: 0 }}
             whileInView={{ scale: 1, opacity: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="relative w-full aspect-[4/5] rounded-[2.5rem] overflow-hidden shadow-2xl border border-black/5"
+            className="relative w-full aspect-16/10 sm:aspect-4/3 md:aspect-4/5 rounded-3xl md:rounded-[2.5rem] overflow-hidden shadow-xl md:shadow-2xl border border-black/5 max-h-[35vh] md:max-h-none"
           >
             <img 
               src={data.image} 

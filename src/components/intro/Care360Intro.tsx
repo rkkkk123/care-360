@@ -12,7 +12,7 @@ interface Care360IntroProps {
 }
 
 // ── Constants ──────────────────────────────────────────────────────
-const TOTAL_DURATION = 15;
+const TOTAL_DURATION = 10;
 const PARTICLE_COUNT = typeof window !== "undefined" && window.innerWidth < 768 ? 1200 : 2500;
 const FONT = "'Geist', 'Inter', system-ui, -apple-system, sans-serif";
 
@@ -70,6 +70,7 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
     // Sync and play the external voiceover
     if (voiceoverRef.current && tlRef.current) {
       voiceoverRef.current.volume = 1.0;
+      voiceoverRef.current.playbackRate = 1.5;
       voiceoverRef.current.currentTime = tlRef.current.time();
       voiceoverRef.current.play().catch(e => console.warn("Voiceover play failed:", e));
     }
@@ -104,9 +105,9 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
     }
   }, [prefersReduced, handleComplete]);
 
-  // ── Show skip button after 2s ──────────────────────────────────
+  // ── Show skip button after 1.5s ────────────────────────────────
   useEffect(() => {
-    const t = setTimeout(() => setShowSkip(true), 2000);
+    const t = setTimeout(() => setShowSkip(true), 1500);
     return () => clearTimeout(t);
   }, []);
 
@@ -194,66 +195,43 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
       };
 
       // ════════════════════════════════════════════════════════════
-      // 0.00 – 1.50  THE VOID: A single point of light
+      // 0.00 – 2.00  DNA DOUBLE HELIX OPENING: 3D rotating double helix
       // ════════════════════════════════════════════════════════════
       tl.call(() => {
-        engine.phase = PHASE.PULSE;
+        engine.phase = PHASE.DNA;
         audioRef.current?.playDrone();
+        audioRef.current?.playHeartbeat();
       }, [], 0);
 
       tl.to(state, {
-        activeCount: 80,
-        pulseIntensity: 1,
-        duration: 1.5,
-        ease: "power2.inOut",
+        activeCount: PARTICLE_COUNT,
+        duration: 1.2,
+        ease: "power2.out",
         onUpdate: syncEngine,
       }, 0);
 
-      // Subtle camera drift
+      // Subtle camera drift into the double helix
       tl.to(state, {
-        cameraZoom: 1.02,
-        cameraY: -3,
-        duration: 3,
+        cameraZoom: 1.05,
+        cameraY: -2,
+        duration: 2.0,
         ease: "none",
         onUpdate: syncEngine,
       }, 0);
 
       // ════════════════════════════════════════════════════════════
-      // 1.50 – 3.00  WAVEFORM: Pulse becomes a flowing wave
-      // ════════════════════════════════════════════════════════════
-      tl.call(() => {
-        engine.phase = PHASE.WAVEFORM;
-        audioRef.current?.playHeartbeat();
-      }, [], 1.5);
-
-      tl.to(state, {
-        activeCount: PARTICLE_COUNT * 0.85,
-        waveAmplitude: Math.min(vh * 0.12, 80),
-        pulseIntensity: 0,
-        duration: 1.5,
-        ease: "power2.out",
-        onUpdate: syncEngine,
-      }, 1.5);
-
-      // ════════════════════════════════════════════════════════════
-      // 3.00 – 4.50  FRAGMENTED WORDS
+      // 2.00 – 3.60  FRAGMENTED WORDS
       // ════════════════════════════════════════════════════════════
       const words = ["REPORT", "VOICE", "DOCTOR", "MEDICINE", "PRESCRIPTION"];
-      const wordDuration = 1.4 / words.length;
+      const wordDuration = 1.6 / words.length;
 
       tl.call(() => {
         engine.phase = PHASE.TYPOGRAPHY;
         audioRef.current?.playDigitalTexture();
-      }, [], 3.0);
-
-      tl.to(state, {
-        activeCount: PARTICLE_COUNT,
-        duration: 0.3,
-        onUpdate: syncEngine,
-      }, 3.0);
+      }, [], 2.0);
 
       words.forEach((word, idx) => {
-        const wordStart = 3.0 + idx * wordDuration;
+        const wordStart = 2.0 + idx * wordDuration;
         // Set typography targets
         tl.call(
           () => {
@@ -293,11 +271,11 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
       });
 
       // ════════════════════════════════════════════════════════════
-      // 4.50 – 6.00  THE STATEMENTS
+      // 3.60 – 4.80  THE STATEMENTS
       // ════════════════════════════════════════════════════════════
       tl.call(() => {
         engine.phase = PHASE.FREEZE;
-      }, [], 4.5);
+      }, [], 3.6);
 
       // "Healthcare became information."
       tl.fromTo(
@@ -308,20 +286,20 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
           filter: "blur(0px)",
           y: 0,
           letterSpacing: "-0.02em",
-          duration: 0.5,
+          duration: 0.38,
           ease: "power3.out",
         },
-        4.5,
+        3.6,
       );
       tl.to(
         container.querySelector(".statement-1"),
         {
           opacity: 0,
           filter: "blur(6px)",
-          duration: 0.3,
+          duration: 0.22,
           ease: "power2.in",
         },
-        5.15,
+        4.08,
       );
 
       // "AI made it understandable."
@@ -333,45 +311,42 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
           filter: "blur(0px)",
           y: 0,
           letterSpacing: "-0.02em",
-          duration: 0.5,
+          duration: 0.38,
           ease: "power3.out",
         },
-        5.5,
+        4.25,
       );
       tl.to(
         container.querySelector(".statement-2"),
         {
           opacity: 0,
           filter: "blur(6px)",
-          duration: 0.25,
+          duration: 0.20,
           ease: "power2.in",
         },
-        6.0,
+        4.68,
       );
 
       // ════════════════════════════════════════════════════════════
-      // 6.00 – 8.50  INTELLIGENCE NETWORK
+      // 4.80 – 6.60  INTELLIGENCE NETWORK
       // ════════════════════════════════════════════════════════════
       tl.call(() => {
         engine.phase = PHASE.NETWORK;
         audioRef.current?.playRiser();
-      }, [], 6.0);
+      }, [], 4.8);
 
       tl.to(state, {
         networkOpacity: 1,
         cameraZoom: 1.08,
-        cameraY: -8,
-        duration: 2.5,
+        cameraY: -6,
+        duration: 1.8,
         ease: "power1.inOut",
         onUpdate: syncEngine,
-      }, 6.0);
+      }, 4.8);
 
-      // ════════════════════════════════════════════════════════════
-      // 8.50 – 10.50  NETWORK NODES + STATEMENT
-      // ════════════════════════════════════════════════════════════
       // Stagger node labels
       NETWORK_LABELS.forEach((label, idx) => {
-        const nodeStart = 8.5 + idx * 0.2;
+        const nodeStart = 4.95 + idx * 0.12;
         const selector = `.node-label-${idx}`;
         const node = networkNodes[idx];
 
@@ -380,7 +355,6 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
           if (el) {
             const cx = vw / 2 + node.x * state.cameraZoom + state.cameraX;
             const cy = vh / 2 + node.y * state.cameraZoom + state.cameraY;
-            // Position labels outside the tight particle clusters
             const isTop = node.y < 0;
             const yOffset = isTop ? -55 : 45;
             el.style.left = `${cx}px`;
@@ -395,7 +369,7 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
             opacity: 1,
             filter: "blur(0px)",
             scale: 1,
-            duration: 0.35,
+            duration: 0.25,
             ease: "power2.out",
           },
           nodeStart,
@@ -411,49 +385,49 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
           filter: "blur(0px)",
           y: 0,
           letterSpacing: "-0.02em",
-          duration: 0.5,
+          duration: 0.40,
           ease: "power3.out",
         },
-        9.8,
+        5.8,
       );
       tl.to(
         container.querySelector(".statement-3"),
-        { opacity: 0, filter: "blur(6px)", duration: 0.25, ease: "power2.in" },
-        10.3,
+        { opacity: 0, filter: "blur(6px)", duration: 0.22, ease: "power2.in" },
+        6.32,
       );
 
       // Fade out node labels
       tl.to(
         container.querySelectorAll('[class*="node-label-"]'),
-        { opacity: 0, filter: "blur(4px)", duration: 0.3, stagger: 0.03 },
-        10.2,
+        { opacity: 0, filter: "blur(4px)", duration: 0.22, stagger: 0.02 },
+        6.35,
       );
 
       // ════════════════════════════════════════════════════════════
-      // 10.50 – 11.80  CONVERGENCE
+      // 6.60 – 7.60  CONVERGENCE (AI Singularity)
       // ════════════════════════════════════════════════════════════
       tl.call(() => {
         engine.phase = PHASE.CONVERGE;
         audioRef.current?.playTension();
-      }, [], 10.5);
+      }, [], 6.6);
 
       tl.to(state, {
-        convergenceForce: 0.08,
+        convergenceForce: 0.09,
         networkOpacity: 0,
         trailAlpha: 0.3,
         cameraZoom: 1.3,
-        duration: 1.1,
+        duration: 0.85,
         ease: "power3.in",
         onUpdate: syncEngine,
-      }, 10.5);
+      }, 6.6);
 
       // Flash
       tl.to(state, {
-        flashOpacity: 0.8,
-        duration: 0.15,
+        flashOpacity: 0.85,
+        duration: 0.12,
         ease: "power4.in",
         onUpdate: syncEngine,
-      }, 11.5);
+      }, 7.45);
 
       tl.to(state, {
         flashOpacity: 0,
@@ -462,26 +436,26 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
         cameraZoom: 1,
         cameraX: 0,
         cameraY: 0,
-        duration: 0.3,
+        duration: 0.2,
         ease: "power2.out",
         onUpdate: syncEngine,
-      }, 11.65);
+      }, 7.57);
 
       // ════════════════════════════════════════════════════════════
-      // 11.80 – 13.50  LOGO REVEAL
+      // 7.60 – 8.80  LOGO REVEAL
       // ════════════════════════════════════════════════════════════
       tl.call(() => {
         engine.phase = PHASE.LOGO;
         audioRef.current?.playImpact();
-      }, [], 11.8);
+      }, [], 7.6);
 
       tl.to(state, {
         activeCount: PARTICLE_COUNT,
         logoOpacity: 1,
-        duration: 1.7,
+        duration: 1.1,
         ease: "power2.out",
         onUpdate: syncEngine,
-      }, 11.8);
+      }, 7.6);
 
       // SVG logo fade in over particles
       tl.fromTo(
@@ -491,42 +465,42 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
           opacity: 1,
           scale: 1,
           filter: "blur(0px)",
-          duration: 1.2,
+          duration: 0.75,
           ease: "power2.out",
         },
-        12.3,
+        7.85,
       );
 
-      // Leaf color animation
+      // Leaf animation
       tl.fromTo(
         container.querySelector(".logo-leaf"),
         { opacity: 0, scale: 0.5 },
         {
           opacity: 1,
           scale: 1,
-          duration: 0.6,
+          duration: 0.45,
           ease: "back.out(1.7)",
         },
-        13.0,
+        8.25,
       );
 
       // ════════════════════════════════════════════════════════════
-      // 13.50 – 15.00  FINAL REVEAL
+      // 8.80 – 10.00  FINAL REVEAL & RESOLUTION
       // ════════════════════════════════════════════════════════════
       tl.call(() => {
         engine.phase = PHASE.FINAL;
         audioRef.current?.playResolution();
-      }, [], 13.5);
+      }, [], 8.8);
 
       // Background transition
       tl.to(
         container,
         {
           backgroundColor: "#060D18",
-          duration: 1.2,
+          duration: 1.0,
           ease: "power2.inOut",
         },
-        13.5,
+        8.8,
       );
 
       // Tagline
@@ -537,19 +511,19 @@ export default function Care360Intro({ onComplete }: Care360IntroProps) {
           opacity: 1,
           y: 0,
           filter: "blur(0px)",
-          duration: 0.8,
+          duration: 0.65,
           ease: "power2.out",
         },
-        13.8,
+        8.95,
       );
 
       // Particle fade on final
       tl.to(state, {
         globalOpacity: 0.15,
-        duration: 1.5,
+        duration: 1.2,
         ease: "power2.inOut",
         onUpdate: syncEngine,
-      }, 13.5);
+      }, 8.8);
 
       // ── Play! ────────────────────────────────────────────────────
       tl.play();

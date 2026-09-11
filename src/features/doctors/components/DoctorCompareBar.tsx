@@ -22,7 +22,7 @@ export function DoctorCompareBar({
   const compareUrl = `/patient/doctors/compare?ids=${selectedDoctors.map((d) => d.id).join(",")}`;
 
   return (
-    <div className="fixed bottom-6 inset-x-0 z-40 flex justify-center px-4 pointer-events-none animate-in fade-in slide-in-from-bottom-4 duration-300">
+    <div className="fixed bottom-20 md:bottom-6 inset-x-0 z-40 flex justify-center px-4 pointer-events-none animate-in fade-in slide-in-from-bottom-4 duration-300">
       <div className="pointer-events-auto flex items-center justify-between gap-4 sm:gap-6 rounded-full border border-border/80 bg-background/90 px-4 sm:px-6 py-3 shadow-2xl backdrop-blur-xl max-w-2xl w-full">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10 text-primary">

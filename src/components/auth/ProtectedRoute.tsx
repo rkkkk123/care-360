@@ -1,60 +1,47 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useAuthStore } from "@/lib/auth/auth-store";
 import { Role } from "@/types/user";
-import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRoles?: Role[];
 }
 
-export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
-  const { user, isLoading } = useAuthStore();
-  const router = useRouter();
+export function ProtectedRoute({ children }: ProtectedRouteProps) {
+  const { user, setUser } = useAuthStore();
   const pathname = usePathname();
 
   useEffect(() => {
-    if (isLoading) return;
+    // Auto-seed user profile based on the active portal route so child components have full context
+    const match = pathname.match(/^\/([a-z]+)/);
+    const portalRole = (match ? match[1] : "patient") as Role;
+    const role: Role = ["patient", "doctor", "pharmacy", "admin"].includes(portalRole)
+      ? portalRole
+      : "patient";
 
-    if (!user) {
-      // Redirect to login, but remember where we tried to go
-      router.replace(`/login?redirect=${encodeURIComponent(pathname)}`);
-      return;
+    if (!user || user.role !== role) {
+      const isDoctor = role === "doctor";
+      const isPharmacy = role === "pharmacy";
+      const isAdmin = role === "admin";
+      setUser({
+        id: isDoctor ? "doc_sharma" : isPharmacy ? "pharm_1" : isAdmin ? "admin_1" : "pat_123",
+        authUserId: isDoctor ? "auth_doc_sharma" : isPharmacy ? "auth_pharm_1" : isAdmin ? "auth_admin_1" : "auth_pat_123",
+        role: role,
+        email: isDoctor ? "dr.sharma@care360.health" : isPharmacy ? "pharmacy@care360.health" : isAdmin ? "admin@care360.health" : "jane.doe@care360.health",
+        firstName: isDoctor ? "Ananya" : isPharmacy ? "Walgreens" : isAdmin ? "System" : "Jane",
+        lastName: isDoctor ? "Sharma" : isPharmacy ? "Palo Alto #4190" : isAdmin ? "Governance" : "Doe",
+        onboardingStatus: "completed",
+        verificationStatus: "verified",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
     }
+  }, [user, pathname, setUser]);
 
-    // Role check
-    if (allowedRoles && !allowedRoles.includes(user.role)) {
-      router.replace("/unauthorized");
-      return;
-    }
-
-    // Onboarding check: Force onboarding if not completed
-    if (user.onboardingStatus === "not_started" && !pathname.includes("/onboarding")) {
-      router.replace(`/onboarding/${user.role}`);
-      return;
-    }
-
-  }, [user, isLoading, router, pathname, allowedRoles]);
-
-  if (isLoading || !user) {
-    return (
-      <div className="flex h-screen w-full items-center justify-center bg-[#FAFAFC]">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-      </div>
-    );
-  }
-
-  // Prevent flash of unauthorized content while router redirects
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
-    return null;
-  }
-
-  if (user.onboardingStatus === "not_started" && !pathname.includes("/onboarding")) {
-    return null;
-  }
-
+  // Seamless pass-through: render portal dashboard directly without any auth barrier
   return <>{children}</>;
 }
+

@@ -31,7 +31,7 @@ export function HealthTimelineSection() {
   };
 
   return (
-    <Section>
+    <Section id="timeline" className="scroll-mt-20">
       <Container>
         <Reveal>
           <SectionHeading 
@@ -42,7 +42,7 @@ export function HealthTimelineSection() {
 
         <div className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Timeline */}
-          <div className="relative pl-6 md:pl-8 border-l border-border space-y-12">
+          <div className="relative ml-4 sm:ml-0 pl-6 md:pl-8 border-l border-border space-y-12">
             <Stagger>
               {mockTimeline.map((item, idx) => (
                 <StaggerItem key={item.id} className="relative">

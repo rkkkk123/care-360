@@ -54,46 +54,44 @@ export class IntroAudio {
     filter.Q.value = 1;
 
     gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.12, now + 1.5);
-    gain.gain.linearRampToValueAtTime(0.06, now + 4);
-    gain.gain.linearRampToValueAtTime(0, now + 6);
+    gain.gain.linearRampToValueAtTime(0.12, now + 0.8);
+    gain.gain.linearRampToValueAtTime(0.06, now + 1.6);
+    gain.gain.linearRampToValueAtTime(0, now + 2.2);
 
     osc.connect(filter).connect(gain).connect(this.master);
     osc.start(now);
-    osc.stop(now + 6);
+    osc.stop(now + 2.3);
     this.nodes.push(osc, gain, filter);
   }
 
-  /** ~2 s: subtle heartbeat pulse */
+  /** ~0.2-1.2 s: subtle heartbeat pulse during DNA spin */
   playHeartbeat() {
     if (!this.ctx || !this.master) return;
     const now = this.ctx.currentTime;
 
-    for (let i = 0; i < 3; i++) {
-      const t = now + i * 0.8;
-      // Sub-bass thump
-      const osc = this.ctx.createOscillator();
-      const gain = this.ctx.createGain();
+    const thumps = [now + 0.2, now + 0.9];
+    thumps.forEach((t, i) => {
+      const osc = this.ctx!.createOscillator();
+      const gain = this.ctx!.createGain();
       osc.type = "sine";
       osc.frequency.setValueAtTime(80, t);
       osc.frequency.exponentialRampToValueAtTime(40, t + 0.15);
       gain.gain.setValueAtTime(0, t);
-      gain.gain.linearRampToValueAtTime(0.08 - i * 0.02, t + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
-      osc.connect(gain).connect(this.master);
+      gain.gain.linearRampToValueAtTime(0.08 - i * 0.015, t + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+      osc.connect(gain).connect(this.master!);
       osc.start(t);
-      osc.stop(t + 0.35);
+      osc.stop(t + 0.32);
       this.nodes.push(osc, gain);
-    }
+    });
   }
 
-  /** 3–6 s: digital texture (filtered noise) */
+  /** 2.0–3.6 s: digital texture (filtered noise sweep) */
   playDigitalTexture() {
     if (!this.ctx || !this.master) return;
     const now = this.ctx.currentTime;
 
-    // White noise via buffer
-    const bufferSize = this.ctx.sampleRate * 3;
+    const bufferSize = Math.floor(this.ctx.sampleRate * 1.8);
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -107,29 +105,27 @@ export class IntroAudio {
     filter.type = "bandpass";
     filter.frequency.value = 2000;
     filter.Q.value = 5;
-    // Sweep the filter
     filter.frequency.setValueAtTime(800, now);
-    filter.frequency.linearRampToValueAtTime(3000, now + 1.5);
-    filter.frequency.linearRampToValueAtTime(1200, now + 3);
+    filter.frequency.linearRampToValueAtTime(3200, now + 1.0);
+    filter.frequency.linearRampToValueAtTime(1400, now + 1.6);
 
     const gain = this.ctx.createGain();
     gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.025, now + 0.5);
-    gain.gain.linearRampToValueAtTime(0.015, now + 2);
-    gain.gain.linearRampToValueAtTime(0, now + 3);
+    gain.gain.linearRampToValueAtTime(0.028, now + 0.3);
+    gain.gain.linearRampToValueAtTime(0.015, now + 1.1);
+    gain.gain.linearRampToValueAtTime(0, now + 1.6);
 
     noise.connect(filter).connect(gain).connect(this.master);
     noise.start(now);
-    noise.stop(now + 3);
+    noise.stop(now + 1.65);
     this.nodes.push(noise, filter, gain);
   }
 
-  /** 6–10 s: rising intelligent soundscape */
+  /** 4.8–6.6 s: rising intelligent network soundscape */
   playRiser() {
     if (!this.ctx || !this.master) return;
     const now = this.ctx.currentTime;
 
-    // Stacked detuned oscillators
     const freqs = [110, 165, 220, 330];
     for (const freq of freqs) {
       const osc = this.ctx.createOscillator();
@@ -142,21 +138,21 @@ export class IntroAudio {
 
       filter.type = "lowpass";
       filter.frequency.setValueAtTime(400, now);
-      filter.frequency.linearRampToValueAtTime(2000, now + 3.5);
+      filter.frequency.linearRampToValueAtTime(2200, now + 1.6);
 
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.04, now + 2);
-      gain.gain.linearRampToValueAtTime(0.06, now + 3.5);
-      gain.gain.linearRampToValueAtTime(0, now + 4.5);
+      gain.gain.linearRampToValueAtTime(0.04, now + 1.0);
+      gain.gain.linearRampToValueAtTime(0.055, now + 1.5);
+      gain.gain.linearRampToValueAtTime(0, now + 1.8);
 
       osc.connect(filter).connect(gain).connect(this.master);
       osc.start(now);
-      osc.stop(now + 4.8);
+      osc.stop(now + 1.85);
       this.nodes.push(osc, gain, filter);
     }
   }
 
-  /** 10–11.8 s: tension riser */
+  /** 6.6–7.6 s: tension riser towards singularity */
   playTension() {
     if (!this.ctx || !this.master) return;
     const now = this.ctx.currentTime;
@@ -165,24 +161,24 @@ export class IntroAudio {
     const gain = this.ctx.createGain();
     osc.type = "sawtooth";
     osc.frequency.setValueAtTime(80, now);
-    osc.frequency.exponentialRampToValueAtTime(400, now + 1.3);
+    osc.frequency.exponentialRampToValueAtTime(480, now + 0.95);
 
     const filter = this.ctx.createBiquadFilter();
     filter.type = "lowpass";
     filter.frequency.setValueAtTime(500, now);
-    filter.frequency.linearRampToValueAtTime(3000, now + 1.3);
+    filter.frequency.linearRampToValueAtTime(3200, now + 0.95);
 
     gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.07, now + 1);
-    gain.gain.linearRampToValueAtTime(0, now + 1.3);
+    gain.gain.linearRampToValueAtTime(0.075, now + 0.7);
+    gain.gain.linearRampToValueAtTime(0, now + 0.98);
 
     osc.connect(filter).connect(gain).connect(this.master);
     osc.start(now);
-    osc.stop(now + 1.4);
+    osc.stop(now + 1.0);
     this.nodes.push(osc, gain, filter);
   }
 
-  /** ~11.8 s: deep cinematic impact */
+  /** ~7.6 s: deep cinematic impact for CARE360 logo snap */
   playImpact() {
     if (!this.ctx || !this.master) return;
     const now = this.ctx.currentTime;
@@ -192,15 +188,15 @@ export class IntroAudio {
     const gain = this.ctx.createGain();
     osc.type = "sine";
     osc.frequency.setValueAtTime(60, now);
-    osc.frequency.exponentialRampToValueAtTime(30, now + 0.8);
+    osc.frequency.exponentialRampToValueAtTime(28, now + 0.7);
     gain.gain.setValueAtTime(0.15, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.5);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
     osc.connect(gain).connect(this.master);
     osc.start(now);
-    osc.stop(now + 1.6);
+    osc.stop(now + 1.3);
 
     // Noise transient
-    const bufferSize = this.ctx.sampleRate;
+    const bufferSize = Math.floor(this.ctx.sampleRate * 0.5);
     const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) {
@@ -213,15 +209,15 @@ export class IntroAudio {
     nFilter.type = "lowpass";
     nFilter.frequency.value = 300;
     nGain.gain.setValueAtTime(0.06, now);
-    nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+    nGain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
     noise.connect(nFilter).connect(nGain).connect(this.master);
     noise.start(now);
-    noise.stop(now + 0.5);
+    noise.stop(now + 0.4);
 
     this.nodes.push(osc, gain, noise, nGain, nFilter);
   }
 
-  /** 13–15 s: tonal resolution (gentle major chord) */
+  /** 8.8–10 s: tonal resolution (gentle major chord) */
   playResolution() {
     if (!this.ctx || !this.master) return;
     const now = this.ctx.currentTime;
@@ -234,12 +230,12 @@ export class IntroAudio {
       osc.type = "sine";
       osc.frequency.value = freq;
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.035, now + 0.4);
-      gain.gain.linearRampToValueAtTime(0.025, now + 1);
-      gain.gain.linearRampToValueAtTime(0, now + 2);
+      gain.gain.linearRampToValueAtTime(0.035, now + 0.3);
+      gain.gain.linearRampToValueAtTime(0.025, now + 0.8);
+      gain.gain.linearRampToValueAtTime(0, now + 1.4);
       osc.connect(gain).connect(this.master);
       osc.start(now);
-      osc.stop(now + 2.2);
+      osc.stop(now + 1.5);
       this.nodes.push(osc, gain);
     }
   }

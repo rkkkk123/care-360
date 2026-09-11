@@ -16,6 +16,7 @@ import {
   Star,
   Users,
   LucideIcon,
+  Cpu,
 } from "lucide-react";
 
 export interface NavItem {
@@ -72,11 +73,13 @@ export const pharmacyNavigation: NavItem[] = [
 
 export const adminNavigation: NavItem[] = [
   { label: "Control Center", href: "/admin", icon: Home, section: "primary", mobileVisible: true },
+  { label: "Corsair HealthOps", href: "/admin/corsair", icon: Cpu, section: "primary", mobileVisible: true },
   { label: "Pharmacy Verifications", href: "/admin/verifications/pharmacies", icon: ShieldCheck, section: "primary", mobileVisible: true },
   { label: "Doctor Verifications", href: "/admin/verifications", icon: Stethoscope, section: "primary" },
   { label: "User Management", href: "/admin/users", icon: Users, section: "primary" },
   { label: "Complaints & Disputes", href: "/admin/complaints", icon: AlertCircle, section: "primary" },
   { label: "Platform Analytics", href: "/admin/analytics", icon: Activity, section: "primary" },
+  { label: "Notifications & Alerts", href: "/admin/notifications", icon: Bell, section: "secondary" },
   { label: "Settings", href: "/admin/settings", icon: Settings, section: "secondary" }
 ];
 
